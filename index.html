@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App Starter</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <h1>My Weather App</h1>
+      <div>
+        <label for="zip-code">U.S. ZIP code</label>
+        <input
+          id="zip-code"
+          name="zip-code"
+          type="text"
+          inputmode="numeric"
+          autocomplete="postal-code"
+          pattern="[0-9]{5}"
+          maxlength="5"
+          value="01879"
+          required
+        />
+        <button id="get-zip-button">Get place</button>
+      </div>
+      <div>
+        <!-- Start these disabled -->
+        <!-- They'll activate once we have a place... -->
+        <button id="get-forecast-button" disabled>Get forecast</button>
+        <button id="get-hourly-button" disabled>Get Hourly Forecast</button>
+      </div>
+
+      <p id="status"></p>
+      <section id="weather">
+        <table>
+          <tr>
+            <th>The Weather</th>
+            <th>Raw Forecast</th>
+          </tr>
+          <tr>
+            <td valign="top">
+              <div style="width: 21em" id="weather-summary"></div>
+            </td>
+            <td valign="top">
+              <pre id="raw-data">Data will appear here...</pre>
+            </td>
+          </tr>
+        </table>
+      </section>
+    </main>
+    <footer>
+      <p><a href="citations.html">Sources &amp; acknowledgments</a></p>
+    </footer>
+  </body>
+</html>

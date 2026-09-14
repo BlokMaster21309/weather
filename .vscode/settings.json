@@ -1,0 +1,12 @@
+{
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "files.exclude": {
+    ".git": true,
+    ".github": true,
+    ".vscode": true,
+    ".gitignore": true,
+    "node_modules": true
+  }
+}

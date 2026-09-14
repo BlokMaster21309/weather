@@ -1,0 +1,8 @@
+{
+  "name": "weather-app-starter",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Vanilla JavaScript weather API starter for IACS Web Design 2",
+  "scripts": { "start": "live-server --no-browser ./" },
+  "devDependencies": { "live-server": "^1.2.2" }
+}
