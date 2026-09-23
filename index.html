@@ -5,12 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Weather App Starter</title>
     <link rel="stylesheet" href="styles.css" />
-    <script src="script.js" defer></script>
+    <script src="myscript.js" defer></script>
   </head>
   <body>
     <main>
       <h1>My Weather App</h1>
-      <div>
+      <div id="get-zip-group" hidden>
+        <p>
+          Location failed,
+          <button id="get-location-button" onclick="locationAuto()">
+            Retry
+          </button>
+          or enter your zip code instead.
+        </p>
         <label for="zip-code">U.S. ZIP code</label>
         <input
           id="zip-code"
@@ -23,13 +30,17 @@
           value="01879"
           required
         />
-        <button id="get-zip-button">Get place</button>
+        <button id="get-zip-button" onclick="locationZip()">Get place</button>
       </div>
       <div>
         <!-- Start these disabled -->
         <!-- They'll activate once we have a place... -->
-        <button id="get-forecast-button" disabled>Get forecast</button>
-        <button id="get-hourly-button" disabled>Get Hourly Forecast</button>
+        <button id="get-forecast-button" onclick="dailyForecast()" disabled>
+          Get forecast
+        </button>
+        <button id="get-hourly-button" onclick="hourlyForecast()" disabled>
+          Get Hourly Forecast
+        </button>
       </div>
 
       <p id="status"></p>
