@@ -1,1 +1,14 @@
+#loading {
+	animation: rotate 2s ease-in-out infinite;
+	width: 1em
+}
 
+@keyframes rotate {
+	from {
+		transform: rotate(0deg);
+	}
+
+	to {
+		transform: rotate(360deg);
+	}
+}

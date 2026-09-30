@@ -38,6 +38,7 @@ let position; //location for geolocation
 document.addEventListener("DOMContentLoaded", locationAuto());
 
 async function locationAuto() {
+  loading.hidden = false;
   // Reset the variables and disable the buttons until we know we have a forecast
   thePlace = undefined;
   forecastUrl = undefined;
@@ -50,6 +51,7 @@ async function locationAuto() {
   if ((await geolocate()) === true) {
     await weatherlocate();
   }
+  loading.hidden = true;
 }
 
 async function geolocate() {
@@ -66,6 +68,7 @@ async function geolocate() {
     console.log(
       `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude} (Accurate to ${position.coords.accuracy} meters)`,
     );
+    document.getElementById("get-zip-group").hidden = true;
     return true; // true means success
   } catch (error) {
     console.error("Error getting location:", error.message);
@@ -100,9 +103,11 @@ async function weatherlocate() {
   } else {
     hourlyButton.disabled = true;
   }
+  loading.hidden = true;
 }
 
 async function locationZip() {
+  loading.hidden = false;
   // Get the zip code from the zip input
   const zipCode = zipInput.value.trim();
 
@@ -153,9 +158,11 @@ async function locationZip() {
   } else {
     hourlyButton.disabled = true;
   }
+  loading.hidden = true;
 }
 
 async function dailyForecast() {
+  loading.hidden = false;
   try {
     const response = await fetch(forecastUrl);
     const data = await response.json();
@@ -172,9 +179,11 @@ async function dailyForecast() {
     console.error("Error fetching daily forecast: ", error);
     statusElement.textContent = `Error fetching daily forecast: ${error}`;
   }
+  loading.hidden = true;
 }
 
 async function hourlyForecast() {
+  loading.hidden = false;
   try {
     const response = await fetch(hourlyForecastUrl);
     const data = await response.json();
@@ -197,4 +206,5 @@ async function hourlyForecast() {
     console.error("Error fetching hourly forecast: ", error);
     statusElement.textContent = `Error fetching hourly forecast: ${error}`;
   }
+  loading.hidden = true;
 }
