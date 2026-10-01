@@ -22,8 +22,6 @@ const weatherSection = document.querySelector("#weather");
 const rawDataElement = document.querySelector("#raw-data");
 const weatherSummaryElement = document.querySelector("#weather-summary");
 
-const hourFormat = localStorage.getItem("hour") ?? "true";
-
 // Get our buttons that trigger stuff...
 const zipButton = document.querySelector("#get-zip-button");
 const locationButton = document.querySelector("#get-location-button");
@@ -198,7 +196,6 @@ async function hourlyForecast() {
       console.log("period: ", p);
       let timeString = new Date(p.startTime).toLocaleTimeString([], {
         hour: "numeric",
-        hour12: hourFormat,
       });
       summary += `<br>${timeString} - ${p.shortForecast}`;
     }
