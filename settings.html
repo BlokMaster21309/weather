@@ -1,36 +1,49 @@
 <!DOCTYPE html> <!-- Settings outline taken from my personal website, made fully be me -->
-	<head>
-		<meta charset="utf-8"/>
-		<style>div { position: relative; left: 1em;}</style>
-		<title>Weather Settings </title>
-		<meta property="og:type" content="website" />
-		<meta property="og:url" content="weather.nolan.schule/settings" />
-		<meta property="og:site_name" content="Weather.Nolan.Schule" />
-		<meta property="og:title" content="Settings" />
-		<meta property="og:description" content="Configure weather thingies." />
-		<meta property="og:locale" content="en_US"/>
-		<script src="settings.js"></script>
-	</head>
-	<body>
-		<h1>Settings</h1>
-		<div id="timesacale">
-			<h2>Appearance</h2>
-			<div id="timescale-seleciton">
-				<h3>Timescale</h3>
-				<p>A timescale to be used on the automatic <a href="weather.html">weather.html</a>. "Double Daily" shows for 06-18 and 18-06, "Hourly" shows every hour.</p>
-				<select id="timescales">
-					<option value="doubleDaily">Double Daily</option>
-					<option value="hourly">Hourly</option>
-				</select>
-			</div>
-			<div id="hours-selection">
-				<h3>Hout Format</h3>
-				<p>An hour format used on all pages for hourly timescale, defaults to "12 Hour"</p>
-				<select id="hours">
-					<option value="">12 Hour</option>
-					<option value="false">24 Hour</option>
-				</select>
-			</div>
-		</div>
-	</body>
+
+<head>
+	<meta charset="utf-8" />
+	<style>
+		section {
+			position: relative;
+			left: 1em;
+		}
+	</style>
+	<title>Weather Settings </title>
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="weather.nolan.schule/settings" />
+	<meta property="og:site_name" content="Weather.Nolan.Schule" />
+	<meta property="og:title" content="Settings" />
+	<meta property="og:description" content="Configure weather thingies." />
+	<meta property="og:locale" content="en_US" />
+	<script src="settings.js"></script>
+</head>
+
+<body>
+	<h1>Settings</h1>
+	<section id="timescale-seleciton">
+		<h2>Timescale</h2>
+		<p>A timescale to be used on the automatic <a href="weather.html">weather.html</a>. "Double Daily" shows for 06-18
+			and 18-06, "Hourly" shows every hour.</p>
+		<select id="timescales">
+			<option value="doubleDaily">Double Daily</option>
+			<option value="hourly">Hourly</option>
+		</select>
+	</section>
+	<section id="hours-selection">
+		<h2>Hout Format</h2>
+		<p>An hour format used on all pages for hourly timescale, defaults to "12 Hour"</p>
+		<select id="hours">
+			<option value="">12 Hour</option>
+			<option value="false">24 Hour</option>
+		</select>
+	</section>
+	<section id="saved-zip">
+		<h2>Zip Prefill</h2>
+		<p>A ZIP Code to be used instead of the geolocation API</p>
+		<label for="zip-code">U.S. ZIP Code</label>
+		<input id="zip-code" name="zip-code" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}"
+			maxlength="5" />
+	</section>
+</body>
+
 </html>
