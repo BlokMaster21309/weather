@@ -1,4 +1,4 @@
-#loading {
+#loading-indicator {
 	animation: rotate 2s ease-in-out infinite;
 	width: 1em
 }

@@ -22,19 +22,22 @@
 	<h1>Settings</h1>
 	<section id="timescale-seleciton">
 		<h2>Timescale</h2>
-		<p>A timescale to be used on the automatic <a href="weather.html">weather.html</a>. "Double Daily" shows for 06-18
-			and 18-06, "Hourly" shows every hour.</p>
+		<p>An automatically selected timescale. "Double Daily" shows for 06-18 and 18-06, "Hourly" shows every hour,
+			defaults to "Manual" so you select manually.</p>
 		<select id="timescales">
+			<option value="">Manual</option>
 			<option value="doubleDaily">Double Daily</option>
 			<option value="hourly">Hourly</option>
 		</select>
 	</section>
 	<section id="hours-selection">
 		<h2>Hout Format</h2>
-		<p>An hour format used on all pages for hourly timescale, defaults to "12 Hour"</p>
+		<p>An hour format for hourly timescale, defaults to "12 Hour"</p>
 		<select id="hours">
 			<option value="">12 Hour</option>
-			<option value="false">24 Hour</option>
+			<option value="h11">11 Hour</option>
+			<option value="h23">23 Hour</option>
+			<option value="h24">24 Hour</option>
 		</select>
 	</section>
 	<section id="saved-zip">

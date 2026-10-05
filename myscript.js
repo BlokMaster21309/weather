@@ -1,5 +1,4 @@
-// Google Gemini turns Navigator Geolocation into a promise
-/**
+/** This one codeblock by Gemini
  * Wraps navigator.geolocation.getCurrentPosition in a Promise.
  * @param {Object} [options] - Optional Geolocation settings (e.g. enableHighAccuracy)
  * @returns {Promise<GeolocationPosition>}
@@ -10,27 +9,31 @@ const getCurrentPositionPromise = (options) => {
 		if (!navigator.geolocation) {
 			return reject(new Error("Geolocation is not supported by this browser."));
 		}
-
 		navigator.geolocation.getCurrentPosition(resolve, reject, options);
 	});
 };
 
 // Get elements we need for our action
-const zipInput = document.querySelector("#zip-code");
-const statusElement = document.querySelector("#status");
-const weatherSection = document.querySelector("#weather");
-const rawDataElement = document.querySelector("#raw-data");
-const weatherSummaryElement = document.querySelector("#weather-summary");
-const weatherTable = document.querySelector("#weather-table");
+const zipInput = document.getElementById("zip-code");
+const statusElement = document.getElementById("status");
+const weatherSection = document.getElementById("weather");
+const rawDataElement = document.getElementById("raw-data");
+const weatherSummaryElement = document.getElementById("weather-summary");
+const weatherTable = document.getElementById("weather-table");
 
-const hourFormat = localStorage.getItem("hour") ?? "true";
+const getZipGroup = document.getElementById("get-zip-group");
+const getForecastGroup = document.getElementById("get-forecast-group");
+const loadingIndicator = document.getElementById("loading-indicator");
+
+const timescale = localStorage.getItem("timescale")
+const hourFormat = localStorage.getItem("hour") || "h12";
 const prefillLocation = (new URLSearchParams(window.location.search)).get('zip-code') || localStorage.getItem("zip")
 
 // Get our buttons that trigger stuff...
-const zipButton = document.querySelector("#get-zip-button");
-const locationButton = document.querySelector("#get-location-button");
-const hourlyButton = document.querySelector("#get-hourly-button");
-const forecastButton = document.querySelector("#get-forecast-button");
+const zipButton = document.getElementById("get-zip-button");
+const locationButton = document.getElementById("get-location-button");
+const hourlyButton = document.getElementById("get-hourly-button");
+const forecastButton = document.getElementById("get-forecast-button");
 
 // Define the variables we need...
 let thePlace; // where the forecast is for
@@ -42,7 +45,7 @@ let position; //location for geolocation
 document.addEventListener("DOMContentLoaded", locationAuto());
 
 async function locationAuto() {
-	loading.hidden = false;
+	loadingIndicator.hidden = false;
 	// Reset the variables and disable the buttons until we know we have a forecast
 	thePlace = undefined;
 	forecastUrl = undefined;
@@ -53,13 +56,19 @@ async function locationAuto() {
 	rawDataElement.textContent = "";
 
 	if (prefillLocation) {
-		locationZip()
-		return;
+		await locationZip();
 	}
-	if ((await geolocate()) === true) {
-		await weatherlocate();
-	}
-	loading.hidden = true;
+	else
+		if ((await geolocate()) === true) {
+			await weatherlocate();
+		}
+	if (timescale === "hourly") {
+		hourlyForecast();
+	};
+	if (timescale === "doubleDaily") {
+		dailyForecast();
+	};
+	loadingIndicator.hidden = true;
 }
 
 async function geolocate() {
@@ -76,11 +85,11 @@ async function geolocate() {
 		console.log(
 			`Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude} (Accurate to ${position.coords.accuracy} meters)`,
 		);
-		document.getElementById("get-zip-group").hidden = true;
+		getZipGroup.hidden = true;
 		return true; // true means success
 	} catch (error) {
 		console.error("Error getting location:", error.message);
-		document.getElementById("get-zip-group").hidden = false;
+		getZipGroup.hidden = false;
 		return false; // false means failure
 	}
 }
@@ -98,7 +107,7 @@ async function weatherlocate() {
 	} catch (error) {
 		console.error("Error fetching weather.gov", error);
 		statusElement.textContent = `Error getting weather data: ${error}`;
-		document.getElementById("get-zip-group").hidden = false;
+		getZipGroup.hidden = false;
 	}
 	// Activate the buttons if we found a URL for the forecast
 	if (forecastUrl) {
@@ -111,11 +120,11 @@ async function weatherlocate() {
 	} else {
 		hourlyButton.disabled = true;
 	}
-	loading.hidden = true;
+	loadingIndicator.hidden = true;
 }
 
 async function locationZip() {
-	loading.hidden = false;
+	loadingIndicator.hidden = false;
 	// Get the zip code from the zip input
 	const zipCode = zipInput.value.trim() || prefillLocation
 
@@ -140,6 +149,7 @@ async function locationZip() {
 	} catch (error) {
 		console.error(error);
 		statusElement.textContent = `Error getting zip code: ${error}`;
+		loadingIndicator.hidden = true;
 		return; // Give up, we failed!
 	}
 	// Request 2: ask NWS which grid and forecast URLs serve those coordinates.
@@ -166,11 +176,11 @@ async function locationZip() {
 	} else {
 		hourlyButton.disabled = true;
 	}
-	loading.hidden = true;
+	loadingIndicator.hidden = true;
 }
 
 async function dailyForecast() {
-	loading.hidden = false;
+	loadingIndicator.hidden = false;
 	try {
 		const response = await fetch(forecastUrl);
 		const data = await response.json();
@@ -187,11 +197,12 @@ async function dailyForecast() {
 		console.error("Error fetching daily forecast: ", error);
 		statusElement.textContent = `Error fetching daily forecast: ${error}`;
 	}
-	loading.hidden = true;
+	getForecastGroup.hidden = true;
+	loadingIndicator.hidden = true;
 }
 
 async function hourlyForecast() {
-	loading.hidden = false;
+	loadingIndicator.hidden = false;
 	try {
 		const response = await fetch(hourlyForecastUrl);
 		const data = await response.json();
@@ -204,7 +215,7 @@ async function hourlyForecast() {
 			console.log("period: ", p);
 			let timeString = new Date(p.startTime).toLocaleTimeString([], {
 				hour: "numeric",
-				hour12: hourFormat,
+				hourCycle: hourFormat,
 			});
 			summary += `<br>${timeString} - ${p.shortForecast}`;
 		}
@@ -213,5 +224,11 @@ async function hourlyForecast() {
 		console.error("Error fetching hourly forecast: ", error);
 		statusElement.textContent = `Error fetching hourly forecast: ${error}`;
 	}
-	loading.hidden = true;
+	getForecastGroup.hidden = true;
+	loadingIndicator.hidden = true;
+}
+
+function unhide() {
+	getZipGroup.hidden = false;
+	getForecastGroup.hidden = true;
 }

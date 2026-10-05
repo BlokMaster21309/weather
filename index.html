@@ -11,7 +11,6 @@
 
 <body>
 	<main>
-		<h1>My Weather App</h1>
 		<form id="get-zip-group" action="" hidden>
 			<p>
 				Location failed,
@@ -22,10 +21,10 @@
 			</p>
 			<label for="zip-code">U.S. ZIP Code</label>
 			<input id="zip-code" name="zip-code" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}"
-				maxlength="5" value="01879" required />
-			<button id="get-zip-button" onclick="locationZip()">Get place</button>
+				maxlength="5" placeholder="i.e. 01879" required />
+			<button id="get-zip-button" type="submit">Get place</button>
 		</form>
-		<section>
+		<section id="get-forecast-group">
 			<!-- Start these disabled -->
 			<!-- They'll activate once we have a place... -->
 			<button id="get-forecast-button" onclick="dailyForecast()" disabled>
@@ -34,7 +33,7 @@
 			<button id="get-hourly-button" onclick="hourlyForecast()" disabled>
 				Get Hourly Forecast
 			</button>
-			<img src="loading.webp" id="loading" title="Loading" />
+			<img src="loading.webp" id="loading-indicator" title="Loading" />
 		</section>
 
 		<p id="status"></p>
@@ -60,6 +59,7 @@
 		<p>
 			<a href="citations.html">Sources &amp; acknowledgments</a>
 			<a href="settings.html">Configration</a>
+			<button onclick="unhide()">Unhide Inputs</button>
 		</p>
 	</footer>
 </body>
