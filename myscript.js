@@ -17,9 +17,13 @@ const getCurrentPositionPromise = (options) => {
 const zipInput = document.getElementById("zip-code");
 const statusElement = document.getElementById("status");
 const weatherSection = document.getElementById("weather");
-const rawDataElement = document.getElementById("raw-data");
-const weatherSummaryElement = document.getElementById("weather-summary");
-const weatherTable = document.getElementById("weather-table");
+const weatherTime = document.getElementById("weather-time");
+const weatherImage = document.getElementById("weather-image");
+const weatherTemp = document.getElementById("weather-temperature");
+const weatherHum = document.getElementById("weather-humidity");
+const weatherWind = document.getElementById("weather-wind");
+const weatherPrecip = document.getElementById("weather-precipitation");
+const weatherForecast = document.getElementById("weather-forecast");
 
 const getZipGroup = document.getElementById("get-zip-group");
 const getForecastGroup = document.getElementById("get-forecast-group");
@@ -27,7 +31,8 @@ const loadingIndicator = document.getElementById("loading-indicator");
 
 const timescale = localStorage.getItem("timescale")
 const hourFormat = localStorage.getItem("hour") || "h12";
-const prefillLocation = (new URLSearchParams(window.location.search)).get('zip-code') || localStorage.getItem("zip")
+const prefillLocation = (new URLSearchParams(window.location.search)).get('zip-code') || localStorage.getItem("zip");
+const td = document.createElement("td");
 
 // Get our buttons that trigger stuff...
 const zipButton = document.getElementById("get-zip-button");
@@ -52,8 +57,6 @@ async function locationAuto() {
 	hourlyForecastUrl = undefined;
 	forecastButton.disabled = true;
 	hourlyButton.disabled = true;
-	weatherSummaryElement.textContent = "";
-	rawDataElement.textContent = "";
 
 	if (prefillLocation) {
 		await locationZip();
@@ -128,15 +131,6 @@ async function locationZip() {
 	// Get the zip code from the zip input
 	const zipCode = zipInput.value.trim() || prefillLocation
 
-	// Reset the variables and disable the buttons until we know we have a forecast
-	thePlace = undefined;
-	forecastUrl = undefined;
-	hourlyForecastUrl = undefined;
-	forecastButton.disabled = true;
-	hourlyButton.disabled = true;
-	weatherSummaryElement.textContent = "";
-	rawDataElement.textContent = "";
-
 	// Attempt to load location data from zip code
 	try {
 		// Request 1: translate a human-friendly ZIP code into coordinates.
@@ -184,15 +178,55 @@ async function dailyForecast() {
 	try {
 		const response = await fetch(forecastUrl);
 		const data = await response.json();
-		rawDataElement.textContent = JSON.stringify(data, null, 2);
-		let summary = "";
-		// For the first 5 weather periods...
-		for (let p of data.properties.periods.slice(0, 1000)) {
-			console.log("period: ", p);
-			// Add to summary: name/shortForecast
-			summary += `<br>${p.name}: ${p.shortForecast}\n`;
+
+		// Clear any previous forecast data
+		weatherTime.replaceChildren();
+		weatherImage.replaceChildren();
+		weatherTemp.replaceChildren();
+		weatherWind.replaceChildren();
+		weatherPrecip.replaceChildren();
+		weatherForecast.replaceChildren();
+		weather.classList.remove("hourly");
+		weather.classList.add("daily");
+
+		const periods = data.properties.periods;
+
+		for (let p of periods) {
+			// Time
+			const timeTh = document.createElement("th");
+			timeTh.textContent = p.name;
+			timeTh.scope = "row";
+			weatherTime.appendChild(timeTh);
+
+			// Icon Image
+			const imageTd = document.createElement("td");
+			const img = document.createElement("img");
+			img.src = p.icon;
+			img.alt = p.shortForecast;
+			imageTd.appendChild(img);
+			weatherImage.appendChild(imageTd);
+
+			// Temperature
+			const tempTd = document.createElement("td");
+			tempTd.textContent = `${p.temperature} °${p.temperatureUnit}`;
+			weatherTemp.appendChild(tempTd);
+
+			// Wind
+			const windTd = document.createElement("td");
+			windTd.textContent = `Wind: ${p.windSpeed} ${p.windDirection}`;
+			weatherWind.appendChild(windTd);
+
+			// Precipitation
+			const precipTd = document.createElement("td");
+			const precipValue = p.probabilityOfPrecipitation?.value ?? 0;
+			precipTd.textContent = `${precipValue}% Precipitation`;
+			weatherPrecip.appendChild(precipTd);
+
+			// Forecast
+			const forecastTd = document.createElement("td");
+			forecastTd.textContent = p.detailedForecast || p.shortForecast;
+			weatherForecast.appendChild(forecastTd);
 		}
-		weatherSummaryElement.innerHTML = summary;
 	} catch (error) {
 		console.error("Error fetching daily forecast: ", error);
 		statusElement.textContent = `Error fetching daily forecast: ${error}`;
@@ -206,23 +240,65 @@ async function hourlyForecast() {
 	try {
 		const response = await fetch(hourlyForecastUrl);
 		const data = await response.json();
-		rawDataElement.textContent = JSON.stringify(data, null, 2);
-		let periods = data.properties.periods;
-		let summary = "";
-		// For the first 8 weather periods...
-		for (let p of periods.slice(0, 1000)) {
-			// build a little summary string (\n creates a new line...)
-			console.log("period: ", p);
-			let timeString = new Date(p.startTime).toLocaleTimeString([], {
-				hour: "numeric",
+
+		// Clear any previous forecast data
+		weatherTime.replaceChildren();
+		weatherImage.replaceChildren();
+		weatherTemp.replaceChildren();
+		weatherWind.replaceChildren();
+		weatherPrecip.replaceChildren();
+		weatherForecast.replaceChildren();
+		weather.classList.remove("daily");
+		weather.classList.add("hourly");
+
+		const periods = data.properties.periods;
+
+		for (let p of periods) {
+			let timeString = new Date(p.startTime).toLocaleString([], {
+				year: 'numeric',
+				month: 'numeric',
+				day: 'numeric',
+				hour: '2-digit',
 				hourCycle: hourFormat,
 			});
-			summary += `<br>${timeString} - ${p.shortForecast}`;
+
+			// Time
+			const timeTh = document.createElement("th");
+			timeTh.textContent = timeString;
+			weatherTime.appendChild(timeTh);
+
+			// Icon Image
+			const imageTd = document.createElement("td");
+			const img = document.createElement("img");
+			img.src = p.icon;
+			img.alt = p.shortForecast;
+			imageTd.appendChild(img);
+			weatherImage.appendChild(imageTd);
+
+			// Temperature
+			const tempTd = document.createElement("td");
+			tempTd.textContent = `${p.temperature} °${p.temperatureUnit}`;
+			weatherTemp.appendChild(tempTd);
+
+			// Wind
+			const windTd = document.createElement("td");
+			windTd.textContent = `Wind: ${p.windSpeed} ${p.windDirection}`;
+			weatherWind.appendChild(windTd);
+
+			// Precipitation
+			const precipTd = document.createElement("td");
+			const precipValue = p.probabilityOfPrecipitation?.value ?? 0;
+			precipTd.textContent = `${precipValue}% Precipitation`;
+			weatherPrecip.appendChild(precipTd);
+
+			// Forecast
+			const forecastTd = document.createElement("td");
+			forecastTd.textContent = p.detailedForecast || p.shortForecast;
+			weatherForecast.appendChild(forecastTd);
 		}
-		weatherSummaryElement.innerHTML = summary;
 	} catch (error) {
-		console.error("Error fetching hourly forecast: ", error);
-		statusElement.textContent = `Error fetching hourly forecast: ${error}`;
+		console.error("Error fetching daily forecast: ", error);
+		statusElement.textContent = `Error fetching daily forecast: ${error}`;
 	}
 	getForecastGroup.hidden = true;
 	loadingIndicator.hidden = true;
@@ -230,5 +306,5 @@ async function hourlyForecast() {
 
 function unhide() {
 	getZipGroup.hidden = false;
-	getForecastGroup.hidden = true;
+	getForecastGroup.hidden = false;
 }

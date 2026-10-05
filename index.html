@@ -11,7 +11,7 @@
 
 <body>
 	<main>
-		<form id="get-zip-group" action="" hidden>
+		<section id="get-zip-group" hidden>
 			<p>
 				Location failed,
 				<button id="get-location-button" onclick="locationAuto()">
@@ -19,11 +19,13 @@
 				</button>
 				or enter your ZIP Code instead.
 			</p>
-			<label for="zip-code">U.S. ZIP Code</label>
-			<input id="zip-code" name="zip-code" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}"
-				maxlength="5" placeholder="i.e. 01879" required />
-			<button id="get-zip-button" type="submit">Get place</button>
-		</form>
+			<form action="">
+				<label for="zip-code">U.S. ZIP Code</label>
+				<input id="zip-code" name="zip-code" type="text" inputmode="numeric" autocomplete="postal-code"
+					pattern="[0-9]{5}" maxlength="5" placeholder="i.e. 01879" required />
+				<button id="get-zip-button" type="submit">Get place</button>
+			</form>
+		</section>
 		<section id="get-forecast-group">
 			<!-- Start these disabled -->
 			<!-- They'll activate once we have a place... -->
@@ -37,22 +39,30 @@
 		</section>
 
 		<p id="status"></p>
-		<section id="weather">
-			<table>
-				<tr>
-					<th>The Weather</th>
-					<th>Raw Forecast</th>
+		<table id="weather">
+			<thead>
+				<tr id="weather-time">
+					<th scope="col">Time</th>
 				</tr>
-				<tr>
-					<td valign="top">
-						<div style="width: 21em" id="weather-summary"></div>
-					</td>
-					<td valign="top">
-						<pre id="raw-data">Data will appear here...</pre>
-					</td>
+			</thead>
+			<tbody>
+				<tr id="weather-image">
+					<th scope="row">Image</th>
 				</tr>
-			</table>
-			<table id="weather-table"></table>
+				<tr id="weather-temperature">
+					<th scope="row">Temperature</th>
+				</tr>
+				<tr id="weather-wind">
+					<th scope="row">Humidity</th>
+				</tr>
+				<tr id="weather-precipitation">
+					<th scope="row">Humidity</th>
+				</tr>
+				<tr id="weather-forecast">
+					<th scope="row">Forecast</th>
+				</tr>
+			</tbody>
+		</table>
 		</section>
 	</main>
 	<footer>

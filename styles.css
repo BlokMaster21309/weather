@@ -12,3 +12,18 @@
 		transform: rotate(360deg);
 	}
 }
+
+#weather.hourly {
+	table-layout: fixed;
+	overflow-x: scroll;
+	width: max-content;
+}
+
+#weather.daily {
+	overflow-x: scroll;
+	width: 5000px
+}
+
+#weather * {
+	border-left: 1px black solid;
+}
